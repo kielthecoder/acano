@@ -16,6 +16,7 @@ namespace Acanomator_4000
     public partial class Form1 : Form
     {
         OpenFileDialog openFile;
+        bool dirty;
 
         public Form1()
         {
@@ -87,17 +88,30 @@ namespace Acanomator_4000
             }
 
             fileStream.Close();
+            dirty = true;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO: show about dialog
+            Form2 frmAbout = new Acanomator_4000.Form2();
+            frmAbout.ShowDialog(this);
         }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            dgvUsers.Width = ClientSize.Width;
-            dgvUsers.Height = ClientSize.Height - menu.Height - toolStrip.Height - status.Height;
+            // removed
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (dirty)
+            {
+                if (MessageBox.Show("Changes have not been synchronized to the server. Do you still want to exit?",
+                                    "Unsaved Changes", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
     }
 }
